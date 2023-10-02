@@ -1,0 +1,31 @@
+# Makefile for LaTeX compilation by yangsl
+# Optimized by Shend Sept.25 2023
+# supports compiling all .tex files in the directory at once
+
+# Basename of the main tex file
+TEXFILE = $(wildcard *.tex)
+MAIN = $(patsubst %.tex,%,${TEXFILE})
+
+# Set the LaTeX compiler
+LATEX_COMPILER = xelatex
+
+TARGET = $(patsubst %.tex,%.pdf,${TEXFILE})
+
+.PHONY: all cleanall clean auto
+
+all: $(TARGET)
+
+$(TARGET): %.pdf : %.tex
+	$(LATEX_COMPILER) $^
+
+clean:
+	$(foreach name, ${MAIN},                                        \
+		@rm -f ${name}.aux ${name}.bbl ${name}.bcf ${name}.blg       \
+		${name}.fdb_latexmk ${name}.fls ${name}.log ${name}.out     \
+		${name}.run.xml ${name}.synctex.gz ${name}.toc ${name}.xdv; \
+	)
+
+cleanall: 
+	@rm -f ${TARGET}
+
+auto: all clean
